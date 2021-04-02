@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+Assigned: {{object.assigned.username}}
+Status: {{object.status}}
+<div class="block">
+{{object.description}}
+</div>
+
+{% endblock content %}

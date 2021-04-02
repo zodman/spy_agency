@@ -27,5 +27,9 @@ class Dashboard(table.SingleTableMixin, django_filters.views.FilterView):
     filterset_class = HitFilter
 
 
-dashboard = Dashboard.as_view()
+class HitView(generic.DetailView):
+    model = Hit
 
+
+hit_view = HitView.as_view()
+dashboard = Dashboard.as_view()

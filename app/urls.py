@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("admin/", include("loginas.urls")),
     path("register/", generic.RedirectView.as_view(pattern_name="registration_register")),
+    path("hits/", generic.RedirectView.as_view(pattern_name="dashboard")),
     path("accounts/", include("registration.backends.simple.urls")),
     path("app/", include("core.urls")),
     path('', generic.TemplateView.as_view(template_name="index.html"),name='index'),

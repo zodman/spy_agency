@@ -15,6 +15,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=CHOICES)
     status = models.CharField(max_length=10, choices=STATUS, default="active")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.type}"
@@ -36,6 +38,9 @@ class Hit(models.Model):
     target = models.CharField(max_length=50)
     status = models.CharField(max_length=10, choices = CHOICES)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hits_created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return f"{self.id}"
