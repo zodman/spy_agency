@@ -8,4 +8,6 @@ django-tables2
 django-registration-redux
 django-active-link
 django-spurl
+django-filter
 
+fabric

@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'loginas',
     "widget_tweaks",
     "django_tables2",
+    "django_filters",
     "active_link",
     "core",
 

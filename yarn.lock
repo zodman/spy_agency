@@ -262,6 +262,11 @@ acorn@^7.0.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
+alpine-hotwire-turbo-adapter@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/alpine-hotwire-turbo-adapter/-/alpine-hotwire-turbo-adapter-0.1.1.tgz#aff69bb3a2ef3cee4a1085041aea6567c6744f37"
+  integrity sha512-HptRRfc54gm1rW4QaqM2trDw06J2yGIKJLxqHw9GZtLTmagdDmV7RpZLpRPY05jftQ1mSgQp3Gvd3QYxv5jElA==
+
 alpinejs@^2.8.2:
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-2.8.2.tgz#b14ec21ae3cd78dcee4aed0a78ed0f01b676dac4"

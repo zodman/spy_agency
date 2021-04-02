@@ -14,14 +14,12 @@
 {% for field in form %}
     {% with field|widget_type as widgett %}
 
-<div class="field">
+    <div class="field {% if horizontal is True %} is-horizontal {% endif %}">
       {% if not "hidden" in  widgett %}  
           {{field|add_label_class:"label is-success"}}       
       {% endif %}
+      
     <div class="control">
-        <!--
-            {{widgett|pprint}} 
-        -->
             {% if "hidden" in widgett %}  
               {{ field}}
             {% elif widgett == "textinput" %}  

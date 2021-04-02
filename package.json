@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@hotwired/turbo": "^7.0.0-beta.4",
+    "alpine-hotwire-turbo-adapter": "^0.1.1",
     "alpinejs": "^2.8.2",
     "browserify": "^17.0.0",
     "browserify-css": "^0.15.0",
