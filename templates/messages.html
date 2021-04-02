@@ -1,0 +1,22 @@
+{% if messages %}
+<div class="pb-xxs is-hidden-print">
+    {% for message in messages %}
+    <div id="not{{forloop.counter}}" 
+		x-data="{isOpen: true }"
+		x-show="isOpen"
+		class="message is-small  {% if message.tags %} is-{{ message.tags }}{% endif %}">
+
+        <div class="message-header">
+            <p>Message</p>
+    
+              <button x-on:click="isOpen=false" class="delete is-small"  aria-label="delete"></button>
+          </div>
+        
+          <div class="message-body">
+            {{ message }}  
+          </div>
+        
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

@@ -1,0 +1,45 @@
+{% include "base.html" %}
+{% load i18n %}
+{% block content %}
+    
+<div class="hero  is-primary is-bold">
+                <div class="hero-body">
+                    <div class="container">
+                        <div class="columns is-vcentered">
+                            <div class="column is-6 ">
+                                <h1 class="title is-spaced is-size-1-desktop">
+                                    The hitman app
+                                </h1>
+                                <h2 class="subtitle">
+
+                                </h2>
+                                {% if request.user.is_authenticated %}
+                                    
+                                 <div class="lp-sl mb-xl subtitle">
+                                    hola ... {{request.user.username}}
+                                </div>
+
+                                {% endif %}
+                                <div class="buttons centered">
+                                    {% if request.user.is_authenticated %}
+                                            <a class="button is-light " href="{% url 'record_list' %}"> Go cuack</a>
+                                        {% else %}
+                                            
+                                    <a href="{% url 'registration_register' %}"
+                                        class="button is-success is-light is-large">
+                                        {% trans "Signup " %}
+                                        </a>
+                                    <a href="{% url 'auth_login' %}" class="button is-outlined is-info is-light is-large">Login </a>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <div class="column">
+                                <img class="card shadow" src="https://i.imgur.com/TbboifS.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock content %}
