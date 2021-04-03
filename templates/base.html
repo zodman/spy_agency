@@ -10,16 +10,20 @@
       {% block body %}
   <section class="section">
     <div class="container">
-        {% include "messages.html" %}
+
+<turbo-frame id="messages"> 
+  {% include "messages.html" %}
+</turbo-frame>
         {% if request.user.is_authenticated %}
             <div class="tabs is-centered">
                 <ul>
                     <li  class="{% active_link 'dashboard' 'is-active' %}">
-                        <a href="{% url 'dashboard' %}" >Dashboard </a>
+                        <a href="{% url 'dashboard' %}" > Hits </a>
                     </li>
                     <li>
                       <a href="{% url 'auth_logout' %}">Logout </a>
                     </li>
+                    <li> {{request.user.username}} [ {{request.user.profile.type}} ] </li>
                 </ul>
             </div>
         {% endif %}

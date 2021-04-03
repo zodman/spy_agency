@@ -21,7 +21,9 @@ boss = Profile.objects.create(type="boss", user=user)
 user = User.objects.all()[2]
 Profile.objects.create(type="leader", user=user)
 s = Seed.seeder()
-s.add_entity(Hit, 50, {'assigned': hitman.user, 'created_by': boss.user , 'target': lambda x: s.faker.name()})
+s.add_entity(Hit, 30, {'assigned': hitman.user, 'created_by': boss.user , 'target': lambda x: s.faker.name()})
+s.execute()
+s.add_entity(Hit, 30, {'target': lambda x: s.faker.name()})
 s.execute()
 User.objects.create_superuser("admin", "admin@example.com", "admin")
 

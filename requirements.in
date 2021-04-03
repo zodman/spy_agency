@@ -9,5 +9,9 @@ django-registration-redux
 django-active-link
 django-spurl
 django-filter
+django-test-plus
 
 fabric
+coverage
+
+

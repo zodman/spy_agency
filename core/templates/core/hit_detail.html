@@ -1,12 +1,70 @@
 {% extends "base.html" %}
 
-
 {% block content %}
+<turbo-frame id="edit" target="_top">
+        <div class="columns">
+                <div class="column is-one-third">
+                        <div class="card">
+                                <div class="card-image">
+                                        <figure class="image has-text-centered  is-square">
+                                                <img src="https://randomuser.me/api/portraits/lego/{{avatar_id|random}}.jpg" alt=""/>
+                                        </figure>
+                                </div>
+                                <div class="card-content">
+                                        <h2 class="subtitle">Target</h2>
+                                        <h1 class="title is-4">
+                                                {{object.target}}
+                                        </h1>
 
-Assigned: {{object.assigned.username}}
-Status: {{object.status}}
-<div class="block">
-{{object.description}}
-</div>
+                                </div>
+                        </div>
+
+
+                </div>
+                <div class="column">
+
+                        <div class="columns">
+                                <div class="column">
+                                        <h2 class="subtitle">
+                                                Actual Status: <span class="tag is-{{object.status_color}} is-large is-light">{{object.get_status}} <span>
+                                        </h2>
+
+                                </div>
+                                        {% if form_status %}
+                                <div class="column">
+
+                                        <div>
+                                                <form action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-8">
+                                                        {% csrf_token %}
+                                                        {% include "form.html" with form=form_status %}
+                                                        <button class="button is-info" type="submit">update</button>
+                                                </form>
+                                        </div>
+                                </div>
+                                        {% endif %}
+                        </div>
+
+                        <h2 class="subtitle"> Description </h2>
+                        <div class="block">
+                                {{object.description}}
+                        </div>
+
+                        <h2 class="subtitle">
+                                Assigned: {{object.assigned}}
+                        </h2>
+                        <h2 class="subtitle">
+                                created by : {{object.created_by }}
+                        </h2>
+                        <div class="columns">
+                                <div class="column">
+                                        Created at {{object.created_at}}
+                                </div>
+                                <div class="column">
+                                        Updated at {{object.updated_at}}
+                                </div>
+                        </div>
+                </div>
+        </div>
+</turbo-frame>
 
 {% endblock content %}

@@ -7,3 +7,8 @@ def init_db(ctx):
     local("python manage.py migrate")
     local("python populate.py")
 
+@task
+def test(c):
+    local("coverage run manage.py test --failfast")
+    local("coverage report -m ")
+

@@ -1,29 +1,37 @@
 {% extends "base.html" %}
 {% load render_table from django_tables2  %}
 {% load i18n %}
-
-
 {% block content %}
 
-{% if filter %}
-<div class="m-5" x-data="{open: false}" >
-        <button class="button is-warning" x-show="!open" @click="open=true">Show Filters </button>
-        <div class="box" x-show="open">
-                <button class="delete is-pulled-right"  @click="open=false">Hide Filters </button>
-                <form action="" method="get">
-                        {% with filter.form as form  %}
-                        {% include "form.html"  %}
-                        {% endwith %}
+{% if table.data.data %}
+        {% if filter %}
+        <div class="m-5" x-data="{open: false}" >
+                <button class="button is-warning" x-show="!open" @click="open=true">Show Filters </button>
+                <div class="box" x-show="open">
+                        <button class="delete is-pulled-right"  @click="open=false">Hide Filters </button>
+                        <form action="" method="get">
+                                {% with filter.form as form  %}
+                                {% include "form.html"  %}
+                                {% endwith %}
 
-                        <div class="field mt-xs is-grouped">
-                                <div class="control">
-                                        <button  type="submit" class="button is-info"> {% trans "Send" %}</button>
+                                <div class="field mt-xs is-grouped">
+                                        <div class="control">
+                                                <button  type="submit" class="button is-info"> {% trans "Send" %}</button>
+                                                <a class="button is-text" href="{% url 'dashboard' %}">Reset</a>
+                                        </div>
                                 </div>
-                        </div>
-                </form>
+                        </form>
+                </div>
         </div>
-</div>
+        {% endif %}
+        {% if request.user.profile.is_boss or request.user.profile.is_leader %}
+                <div class="m-5">
+                        <a class="button is-info" href="{% url 'create_hit' %}" >Create hit</a>
+                </div>
+        {% endif %}
+        {% render_table table %}
+{% else %}
+        <h2>No hits for you, ask a boss for assign some...</h2>
 {% endif %}
-{% render_table table %}
 
 {% endblock content %}
