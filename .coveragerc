@@ -1,0 +1,12 @@
+[run]
+branch = true
+omit = */settings.py, */tests/*, */migrations/*, */urls.py, */settings/*
+    */wsgi.py, manage.py, fabfile.py, app/local_settings.py, */autofixtures* 
+    */baseconv.py*, */apps.py, core/context_processor.py, tasks.py, populate.py,
+    app/extra_settings.py, .env/*, app/asgi.py
+source = .
+
+[report]
+show_missing = true
+exclude_lines = 
+    def __str__
