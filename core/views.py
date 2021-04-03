@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.html import format_html
 from django.contrib import messages
+from django.http import Http404
 from core.models import Hit
 import django_tables2 as table
 import django_filters
@@ -73,7 +74,7 @@ def update_hit(request, pk):
         object.save()
         messages.success(request, f"Hit was updated to: {object.get_status()}")
     else:
-        messages.error(request, "not assigned")
+        raise Http404("not owned")
     return redirect(object)
 
 
@@ -81,7 +82,7 @@ class CreateHit(generic.CreateView):
     model = Hit
     fields = ("assigned", "target", "description",)
 
-    def form_valid(self,form):
+    def form_valid(self, form):
         object = form.save(commit=False)
         object.created_by = self.request.user
         object.save()
