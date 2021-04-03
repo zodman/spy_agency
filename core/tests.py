@@ -25,6 +25,17 @@ class TestAssigned(TestCase):
             })
         s.execute()
 
+    def test_hit_detail(self):
+        h = Hit.objects.filter(assigned__username="u1").first()
+
+        with self.subTest("view own hit") and self.login(username="u1"):
+            self.get_check_200("hit_view", pk=h.id)
+        h = Hit.objects.exclude(assigned__username="u1").first()
+        with self.subTest("view others hit") and self.login(username="u1"):
+            self.get("hit_view", pk=h.id)
+            self.response_404()
+
+
     def test_assing_user(self):
         user = User.objects.get(username='u1')
         with self.login(username=user.username):

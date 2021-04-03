@@ -40,12 +40,7 @@ class HitTable(table.Table):
         exclude = ("description", "created_at", "updated_at")
 
 
-class Dashboard(table.SingleTableMixin, django_filters.views.FilterView):
-    template_name = "dashboard.html"
-    model = Hit
-    table_class = HitTable
-    filterset_class = HitFilter
-
+class MixinRestricted:
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
@@ -54,7 +49,14 @@ class Dashboard(table.SingleTableMixin, django_filters.views.FilterView):
         return qs
 
 
-class HitView(generic.DetailView):
+class Dashboard(MixinRestricted, table.SingleTableMixin, django_filters.views.FilterView):
+    template_name = "dashboard.html"
+    model = Hit
+    table_class = HitTable
+    filterset_class = HitFilter
+
+
+class HitView(MixinRestricted, generic.DetailView):
     model = Hit
 
     def get_context_data(self, **kwargs):
