@@ -1,24 +1,16 @@
 from django.views import generic
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
+from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from core.models import Hit
+from django.db.models import Q
 import django_tables2 as table
 import django_filters
 import django_filters.views
-from django import forms
-
-
-class FormStatus(forms.Form):
-    change_status = forms.ChoiceField(choices=Hit.CHOICES)
-
-    def __init__(self, actual_status, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        choices = Hit.next_status(actual_status)
-        self.fields["change_status"].choices = choices
-
+from .forms import FormStatus, FormAssigned
 
 class HitFilter(django_filters.FilterSet):
     target = django_filters.CharFilter(lookup_expr="icontains")
@@ -44,8 +36,10 @@ class MixinRestricted:
     def get_queryset(self):
         qs = super().get_queryset()
         user = self.request.user
-        if user.profile.is_hitman():
+        if user.profile.is_hitman:
             qs = qs.filter(assigned=user)
+        elif user.profile.is_boss:
+            qs = qs.filter(Q(created_by=user)|Q(assigned=user))
         return qs
 
 
@@ -62,35 +56,73 @@ class HitView(MixinRestricted, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         object = context.get("object")
-        if Hit.next_status(object.status):
+        user = self.request.user
+        if Hit.next_status(object.status) and user.profile.is_hitman:
             context["form_status"] = FormStatus(object.status)
-        context["avatar_id"] = range(11)
+        if user.profile.is_boss and object.is_new:
+            context["form_assigned"] = FormAssigned(user)
+        context["avatar_id"] = range(10)
         return context
 
 
 @login_required
 def update_hit(request, pk):
     object = get_object_or_404(Hit, id=pk)
-    if request.method == "POST" and request.user == object.assigned:
-        object.status = request.POST.get("change_status")
-        object.save()
-        messages.success(request, f"Hit was updated to: {object.get_status()}")
+
+    def show_error(f, request):
+        for k, v in f.errors.items():
+            messages.error(request, f'{k} {"".join(v)}')
+
+    if request.method == "POST":
+        # TODO move this valid to the form
+        if request.user == object.assigned and request.user.profile.is_hitman:
+            f = FormStatus(object.status, request.POST)
+            if f.is_valid():
+                object.status = f.cleaned_data.get("change_status")
+                object.save()
+                messages.success(request, f"Hit status was updated to: {object.get_status()}")
+            else:
+                show_error(f, request)
+        # TODO move this valid to the form
+        if request.user.profile.is_boss and object.is_new:
+            f = FormAssigned(request.user, request.POST)
+            if f.is_valid():
+                object.assigned = request.POST.get("assigned")
+                object.save()
+                messages.success(request, f"Hit assigned was updated to: {object.assigned}")
+            else:
+                show_error(f, request)
+        return redirect(object)
     else:
-        raise Http404("not owned")
-    return redirect(object)
+        raise Http404("wtf!")
 
 
 class CreateHit(generic.CreateView):
     model = Hit
     fields = ("assigned", "target", "description",)
+    
+    def get_form(self, **kwargs):
+        form = super().get_form(**kwargs)
+        user = self.request.user
+        if user.profile.is_hitman:
+            raise Http404("is hitman")
+        elif user.profile.is_boss:
+            form.fields["assigned"].queryset = user.profile.manages.all()
+        return form
 
     def form_valid(self, form):
         object = form.save(commit=False)
         object.created_by = self.request.user
         object.save()
+        self.object = object
         messages.success(self.request, "Hit was added")
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
+
+def index(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("dashboard"))
+    return render(request, "index.html")
 
 hit_view = login_required(HitView.as_view())
 dashboard = login_required(Dashboard.as_view())

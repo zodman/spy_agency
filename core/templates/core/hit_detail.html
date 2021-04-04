@@ -30,28 +30,37 @@
                                         </h2>
 
                                 </div>
-                                        {% if form_status %}
+                                {% if form_status %}
                                 <div class="column">
-
                                         <div>
-                                                <form action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-8">
+                                                <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-8">
                                                         {% csrf_token %}
                                                         {% include "form.html" with form=form_status %}
                                                         <button class="button is-info" type="submit">update</button>
                                                 </form>
                                         </div>
                                 </div>
-                                        {% endif %}
+                                {% endif %}
                         </div>
 
                         <h2 class="subtitle"> Description </h2>
                         <div class="block">
                                 {{object.description}}
                         </div>
-
-                        <h2 class="subtitle">
-                                Assigned: {{object.assigned}}
-                        </h2>
+                        <div class="columns">
+                                <div class="column">
+                                        <h2 class="subtitle">
+                                                Assigned: {{object.assigned}}
+                                        </h2>
+                                </div>
+                                <div class="column">
+                                        <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-7">
+                                                {% csrf_token %}
+                                                {% include "form.html" with form=form_assigned %}
+                                                <button class="button is-info" type="submit">update</button>
+                                        </form>
+                                </div>
+                        </div>
                         <h2 class="subtitle">
                                 created by : {{object.created_by }}
                         </h2>

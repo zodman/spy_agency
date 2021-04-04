@@ -2,6 +2,7 @@ django
 django-seed
 django-loginas
 django-bsync
+django-admin-relation-links
 
 django-widget-tweaks
 django-tables2
