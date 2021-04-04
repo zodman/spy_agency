@@ -12,6 +12,7 @@ import django_filters
 import django_filters.views
 from .forms import FormStatus, FormAssigned
 
+
 class HitFilter(django_filters.FilterSet):
     target = django_filters.CharFilter(lookup_expr="icontains")
 
@@ -25,7 +26,9 @@ class HitTable(table.Table):
     status = table.Column()
 
     def render_status(self, value, record):
-        return format_html(f"<span class='tag is-{record.status_color} is-light'>{value}</span>")
+        return format_html(
+            f"<span class='tag is-{record.status_color} is-light'>{value}</span>"
+        )
 
     class Meta:
         model = Hit
@@ -34,16 +37,18 @@ class HitTable(table.Table):
 
 class MixinRestricted:
     def get_queryset(self):
+
         qs = super().get_queryset()
         user = self.request.user
         if user.profile.is_hitman:
             qs = qs.filter(assigned=user)
         elif user.profile.is_boss:
-            qs = qs.filter(Q(created_by=user)|Q(assigned=user))
+            qs = qs.filter(Q(created_by=user) | Q(assigned=user))
         return qs
 
 
-class Dashboard(MixinRestricted, table.SingleTableMixin, django_filters.views.FilterView):
+class Dashboard(MixinRestricted, table.SingleTableMixin,
+                django_filters.views.FilterView):
     template_name = "dashboard.html"
     model = Hit
     table_class = HitTable
@@ -68,6 +73,7 @@ class HitView(MixinRestricted, generic.DetailView):
 @login_required
 def update_hit(request, pk):
     object = get_object_or_404(Hit, id=pk)
+
     def show_error(f, request):
         for k, v in f.errors.items():
             messages.error(request, f'{k} {"".join(v)}')
@@ -79,7 +85,9 @@ def update_hit(request, pk):
             if f.is_valid():
                 object.status = f.cleaned_data.get("change_status")
                 object.save()
-                messages.success(request, f"Hit status was updated to: {object.get_status()}")
+                messages.success(
+                    request,
+                    f"Hit status was updated to: {object.get_status()}")
             else:
                 show_error(f, request)
         # TODO move this valid to the form
@@ -88,7 +96,8 @@ def update_hit(request, pk):
             if f.is_valid():
                 object.assigned = request.POST.get("assigned")
                 object.save()
-                messages.success(request, f"Hit assigned was updated to: {object.assigned}")
+                messages.success(
+                    request, f"Hit assigned was updated to: {object.assigned}")
             else:
                 show_error(f, request)
         return redirect(object)
@@ -98,8 +107,12 @@ def update_hit(request, pk):
 
 class CreateHit(generic.CreateView):
     model = Hit
-    fields = ("assigned", "target", "description",)
-    
+    fields = (
+        "assigned",
+        "target",
+        "description",
+    )
+
     def get_form(self, **kwargs):
         form = super().get_form(**kwargs)
         user = self.request.user
@@ -123,6 +136,13 @@ def index(request):
         return HttpResponseRedirect(reverse("dashboard"))
     return render(request, "index.html")
 
+
 hit_view = login_required(HitView.as_view())
 dashboard = login_required(Dashboard.as_view())
 create_hit = login_required(CreateHit.as_view())
+
+__all__ = (
+    'hit_view',
+    'dashboard',
+    'create_hit',
+)

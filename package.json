@@ -4,12 +4,12 @@
     "bsync": "browser-sync start -p localhost:8000 -w core/**/*.js -w core/**/*.html -w templates/**/*.html"
   },
   "dependencies": {
-    "@hotwired/turbo": "^7.0.0-beta.4",
-    "alpine-hotwire-turbo-adapter": "^0.1.1",
+    "alpine-turbo-drive-adapter": "^1.0.2",
     "alpinejs": "^2.8.2",
     "browserify": "^17.0.0",
     "browserify-css": "^0.15.0",
     "bulma": "^0.9.2",
-    "esmify": "^2.1.1"
+    "esmify": "^2.1.1",
+    "turbolinks": "^5.2.0"
   }
 }

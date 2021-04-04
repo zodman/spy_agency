@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from .models import Hit
 
 
+class FormUsers(forms.Form):
+    users = forms.ModelChoiceField(queryset=User.objects.all())
+
+
 class FormStatus(forms.Form):
     change_status = forms.ChoiceField(choices=Hit.CHOICES)
 
@@ -13,7 +17,8 @@ class FormStatus(forms.Form):
 
 
 class FormAssigned(forms.Form):
-    assigned = forms.ModelChoiceField(queryset=User.objects.all())
+    assigned = forms.ModelChoiceField(label="Change assigned to",
+                                      queryset=User.objects.all())
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
