@@ -35,6 +35,17 @@ class TestAssigned(TestCase):
             self.get("hit_view", pk=h.id)
             self.response_404()
 
+    def test_create_hit(self):
+        user = User.objects.get(username='u1')
+        with self.login(username=user.username):
+            data = {
+                'target': "target1",
+                'description': "description",
+                'assigned': user.id, 
+            }
+            self.post("create_hit", data=data)
+            self.response_200()
+     
 
     def test_assing_user(self):
         user = User.objects.get(username='u1')
