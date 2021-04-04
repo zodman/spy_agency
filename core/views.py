@@ -68,7 +68,6 @@ class HitView(MixinRestricted, generic.DetailView):
 @login_required
 def update_hit(request, pk):
     object = get_object_or_404(Hit, id=pk)
-
     def show_error(f, request):
         for k, v in f.errors.items():
             messages.error(request, f'{k} {"".join(v)}')
