@@ -109,8 +109,28 @@ class TestFlow(TestMixin, TestCase):
                     'assigned': 'u3',
                 }
                 self.post("update_hit", pk=hit.id, data=data)
-
-
+                self.response_302()
+            with self.subTest("the bigboss can assign hitmans to the boss"):
+                self.get_check_200("manage")
+                user = self.make_user("u5")
+                Profile.objects.create(type="hitman", user=user)
+                data = {
+                    'manager': User.objects.get(username="u2").id,
+                    'user': user.id,
+                }
+                self.post("manage", data=data)
+                self.response_302()
+                boss = Profile.objects.get(user__username="u2")
+                self.assertTrue( boss.manages.filter(id=user.id).exists())
+                with self.subTest("remove the hitman"):
+                    data = {
+                        'manager': User.objects.get(username="u2").id,
+                        'user': user.id,
+                    }
+                    self.post("manage", data=data)
+                    self.response_302()
+                    boss = Profile.objects.get(user__username="u2")
+                    self.assertFalse( boss.manages.filter(id=user.id).exists())
 
 
 
