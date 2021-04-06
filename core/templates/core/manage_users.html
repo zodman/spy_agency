@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="columns">
-        <div class="column">
+        <div class="column card has-background-white-ter">
                 <form novalidate action="{% url 'manage' %}" method="post" accept-charset="utf-8">
                         {% csrf_token %}
                         {% include "form.html" %}
@@ -11,44 +11,47 @@
                                                 Add
                                         </button>
                                 </div>
+                                <div class="m-1">
+                                        * Note: if you add the same user twice, this will be removed.
+                                </div>
                         </div>
                 </form>
         </div>
         <div class="column">
                 <h2 class="subtitle">
-                        Hitman at my charge
+                        Hitmen teams
                 </h2>
                 {% for boss_profile in bosses  %}
-                       <div>
-                               {{boss_profile.user}}
-                       </div>
-                <ul>
-                        {% for user in boss_profile.manages.all  %}
-                        <li class="m-2">
-                                <div class="columns">
-                                        <div class="column">
-                                                {{user.username}}
-                                        </div>
-                                        <div class="column hast-text-centered">
-                                                {% if user.profile %}
-                                                <span class="tag is-{{user.profile.status_color}}"> {{ user.profile.get_status }} </span>
-                                                {% else %}
-                                                No profile
-                                                {% endif %}
-                                        </div>
-                                        <div class="column">
-                                                <form action="{%url 'manage'%}" method="post" accept-charset="utf-8">
-                                                        {% csrf_token %}
-                                                        <input type="hidden" name="user" value="{{user.id}}">
-                                                        <input type="hidden" name="manager" value="{{boss_profile.user.id}}">
-                                                        <button class="mr-2 delete "  type="submit">Remove</button>
-                                                </form>
+                <div class="box">
+                        <span class="has-text-weight-semibold  is-family-primary "> Boss: {{boss_profile.user}}</span>
+                        <ul>
+                                {% for user in boss_profile.manages.all  %}
+                                <li class="m-2">
+                                        <div class="columns">
+                                                <div class="column">
+                                                        {{user.username}}
+                                                </div>
+                                                <div class="column hast-text-centered">
+                                                        {% if user.profile %}
+                                                        <span class="tag is-{{user.profile.status_color}}"> {{ user.profile.get_status }} </span>
+                                                        {% else %}
+                                                        No profile
+                                                        {% endif %}
+                                                </div>
+                                                <div class="column">
+                                                        <form action="{%url 'manage'%}" method="post" accept-charset="utf-8">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="user" value="{{user.id}}">
+                                                                <input type="hidden" name="manager" value="{{boss_profile.user.id}}">
+                                                                <button class="mr-2 delete "  type="submit">Remove</button>
+                                                        </form>
 
+                                                </div>
                                         </div>
-                                </div>
-                        </li>
-                        {% endfor %}
-                </ul>
+                                </li>
+                                {% endfor %}
+                        </ul>
+                </div>
                 {% endfor %}
         </div>
 </div>

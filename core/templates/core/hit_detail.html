@@ -6,7 +6,7 @@
                         <div class="card">
                                 <div class="card-image">
                                         <figure class="image has-text-centered  is-square">
-                                                <img src="https://randomuser.me/api/portraits/lego/{{avatar_id|random}}.jpg" alt=""/>
+                                                <img src="https://randomuser.me/api/portraits/lego/{{object.id|get_digit:'1'}}.jpg" alt=""/>
                                         </figure>
                                 </div>
                                 <div class="card-content">
@@ -20,16 +20,16 @@
 
 
                 </div>
-                <div class="column">
+                <div class="column has-background-white-ter">
 
-                        <div class="columns">
+                        <div class="columns" >
                                 <div class="column">
                                         <h2 class="subtitle">
                                                 Actual Status: <span class="tag is-{{object.status_color}} is-large is-light">{{object.get_status}} <span>
                                         </h2>
 
                                 </div>
-                                {% if request.user.is_hitman and form_status %}
+                                {% if request.user.profile.is_hitman and form_status %}
                                 <div class="column">
                                         <div>
                                                 <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-8">

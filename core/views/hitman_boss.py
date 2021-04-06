@@ -18,7 +18,7 @@ class HitFilter(django_filters.FilterSet):
 
     class Meta:
         model = Hit
-        fields = ("target", "created_by", "status")
+        fields = ("target", "created_by", "status", "assigned")
 
 
 class HitTable(table.Table):
@@ -91,10 +91,10 @@ def update_hit(request, pk):
             else:
                 show_error(f, request)
         # TODO move this valid to the form
-        if request.user.profile.is_boss and object.is_new:
+        if request.user.profile.is_boss and object.is_assigned:
             f = FormAssigned(request.user, request.POST)
             if f.is_valid():
-                object.assigned = request.POST.get("assigned")
+                object.assigned = f.cleaned_data.get("assigned")
                 object.save()
                 messages.success(
                     request, f"Hit assigned was updated to: {object.assigned}")

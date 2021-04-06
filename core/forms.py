@@ -22,5 +22,10 @@ class FormAssigned(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        users = user.profile.manages.all()
+        if user.profile.is_boss:
+            users = user.profile.manages.all()
+        elif user.profile.is_leader:
+            users = User.objects.all()
+        else:
+            users = User.objects.none()
         self.fields["assigned"].queryset = users

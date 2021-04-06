@@ -13,6 +13,16 @@
 
         {% include "messages.html" %}
         {% if request.user.is_authenticated %}
+
+            <span class="tags has-addons is-pulled-right">
+              <span class="tag is-dark">
+                {{request.user.username}}
+              </span>
+              <span class="tag is-info">
+               [ {{request.user.profile.type}} ] 
+              </span>
+            </span>
+
         <div class="tabs is-centered">
           <ul>
             <li  class="{% active_link 'dashboard' 'is-active' %}">
@@ -22,16 +32,14 @@
             <li  class="{% active_link 'manage' 'is-active' %}">
               <a href="{%url 'manage' %}">Manage Hitmen</a>
             </li>
-              
             {% endif %}
             <li>
               <a href="{% url 'auth_logout' %}">Logout </a>
             </li>
-            <li> {{request.user.username}} [ {{request.user.profile.type}} ] </li>
             {% if request.user.is_superuser %}
-            <li> <a href="{% url 'admin:index' %}"> Admin </a></li> 
+              <li> <a href="{% url 'admin:index' %}"> Admin </a></li> 
             {% endif %}
-          </ul>
+            </ul>
         </div>
         {% endif %}
         {% block content %}
