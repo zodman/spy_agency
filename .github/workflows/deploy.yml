@@ -29,6 +29,6 @@ jobs:
       run: |
         fab test
     - name: Deploy with fabric
-      run: fab -H zodman@python4.ninja deploy
+      run: fab -H zodman@python3.ninja deploy
       continue-on-error: true
 
