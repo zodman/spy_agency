@@ -14,3 +14,8 @@ def test(c):
     local("coverage run manage.py test --failfast")
     local("coverage report -m ")
     local("coverage html")
+
+
+@task
+def deploy(c):
+    pass
