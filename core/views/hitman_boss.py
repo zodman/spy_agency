@@ -82,6 +82,8 @@ class BulkView(MixinRestricted, generic.ListView, generic.FormView):
         if form_class is None:
             form_class = self.get_form_class()
         user = self.request.user
+        if user.profile.is_hitman:
+            raise Http404("not allowed")
         return form_class(user, **self.get_form_kwargs())
 
     def form_valid(self, form):
