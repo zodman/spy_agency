@@ -22,11 +22,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2.0.2
+      uses: webfactory/ssh-agent@v0.5.1
       with:
-        key: ${{ secrets.SSH_KEY }}
-        name: id_rsa # optional
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+        ssh-private-key: ${{ secrets.SSH_KEY }}
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
@@ -42,7 +40,6 @@ jobs:
         fab init-db
         fab test
         coveralls
-    - run: ssh zodman@python3.ninja -i ~/.ssh/id_rsa -v
     - name: Deploy with fabric
       run: fab -i ~/.ssh/id_rsa -H zodman@python3.ninja deploy
       continue-on-error: true
