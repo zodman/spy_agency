@@ -50,6 +50,8 @@
                                 <div class="column">
                                         <h2 class="subtitle">
                                                 Assigned: {{object.assigned}}
+
+                                                <span class="tag is-{{object.assigned.profile.status_color}}"> {{ object.assigned.profile.get_status }} </span>
                                         </h2>
                                 </div>
                                 {% if form_assigned %}
@@ -64,6 +66,7 @@
                         </div>
                         <h2 class="subtitle">
                                 created by : {{object.created_by }}
+                                <span class="tag is-{{object.created_by.profile.status_color}}"> {{object.created_by.profile.get_status }} </span>
                         </h2>
                         <div class="columns">
                                 <div class="column">

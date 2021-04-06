@@ -70,9 +70,13 @@ class ManageHitman(generic.FormView):
     def get_form(self, **kwargs):
         form = super().get_form(**kwargs)
         if self.request.user.profile.is_leader:
-            form.fields["manager"].queryset = User.objects.filter(profile__type="boss")
+            qs = (User.objects.filter(profile__type="boss",
+                                      profile__status='active'))
+            form.fields["manager"].queryset = qs 
         else:
-            form.fields["manager"].queryset = User.objects.filter(id=self.request.user.id)
+            qs = (User.objects.filter(id=self.request.user.id,
+                                      profile__status='active'))
+            form.fields["manager"].queryset = qs
         return form
 
     def form_valid(self, form):
@@ -100,7 +104,7 @@ class ManageHitman(generic.FormView):
         context = super().get_context_data(**kwargs)
         if self.request.user.profile.is_leader:
             context.update({
-                'bosses': Profile.objects.filter(type="boss")
+                'bosses': Profile.objects.filter(type="boss", status="active")
             })
         else:
             context.update({

@@ -5,7 +5,7 @@ from .models import Hit
 
 class FormManager(forms.Form):
     manager = forms.ModelChoiceField(queryset=(
-        User.objects.filter(profile__type="boss", profile__status='active')))
+        User.objects.filter(profile__type="boss").filter(profile__status='active')))
     user = forms.ModelChoiceField(queryset=User.objects.filter(
         profile__status="active"))
 
@@ -27,9 +27,9 @@ class FormAssigned(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if user.profile.is_boss:
-            users = user.profile.manages.all()
+            users = user.profile.manages.filter(profile__status='active')
         elif user.profile.is_leader:
-            users = User.objects.all()
+            users = User.objects.filter(profile__status='active')
         else:
             users = User.objects.none()
         self.fields["assigned"].queryset = users
