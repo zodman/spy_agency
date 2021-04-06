@@ -29,7 +29,7 @@ def deploy(ctx):
     rsync(ctx, ".", "apps/spy_agency", exclude=exclude_dirs)
     with ctx.cd("apps/spy_agency"):
         with ctx.prefix("source ~/apps/spy_agency/.env/bin/activate"):
-            ctx.run("pip install -r requirements.in")
+            ctx.run("pip install -r requirements.txt")
             ctx.run("python manage.py migrate")
     ctx.run("sudo supervisorctl restart spy-agency")
 
