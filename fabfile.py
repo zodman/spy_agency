@@ -18,4 +18,4 @@ def test(c):
 
 @task
 def deploy(c):
-    pass
+    c.run("id")
