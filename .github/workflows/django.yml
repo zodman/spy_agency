@@ -42,7 +42,7 @@ jobs:
         fab init-db
         fab test
         coveralls
-    - run: ls ~/.ssh/
+    - run: ssh zodman@python3.ninja -i ~/.ssh/id_rsa -v
     - name: Deploy with fabric
       run: fab -i ~/.ssh/id_rsa -H zodman@python3.ninja deploy
       continue-on-error: true
