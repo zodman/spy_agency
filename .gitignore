@@ -159,3 +159,4 @@ Thumbs.db #thumbnail cache on Windows
 
 node_modules/*
 tags
+static/*

@@ -12,6 +12,7 @@ django-filter
 django-test-plus
 
 fabric
+patchwork
 coverage
 coveralls
 
