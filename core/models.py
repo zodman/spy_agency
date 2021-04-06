@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
-from .signals import registered_user
+from .signals import *
 
 
 class Profile(models.Model):
@@ -25,6 +25,9 @@ class Profile(models.Model):
     status = models.CharField(max_length=10, choices=STATUS, default="active")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse_lazy("hitman_detail", kwargs=dict(pk=self.id))
 
     def __str__(self):
         return f"{self.type}"
@@ -53,7 +56,7 @@ class Profile(models.Model):
     def is_hitman(self):
         if self.type == 'hitman':
             return True
-        
+
 
 class Hit(models.Model):
     STATUS_COLOR = {

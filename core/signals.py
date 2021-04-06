@@ -8,4 +8,6 @@ def registered_user(sender, **kwargs):
     user = kwargs.get("user")
     Profile.objects.create(user=user)
 
-
+__all__ = [
+    "registered_user",
+]

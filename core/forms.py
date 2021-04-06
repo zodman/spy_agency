@@ -4,8 +4,11 @@ from .models import Hit
 
 
 class FormManager(forms.Form):
-    manager = forms.ModelChoiceField(queryset=User.objects.filter(profile__type="boss"))
-    user = forms.ModelChoiceField(queryset=User.objects.all())
+    manager = forms.ModelChoiceField(queryset=(
+        User.objects.filter(profile__type="boss", profile__status='active')))
+    user = forms.ModelChoiceField(queryset=User.objects.filter(
+        profile__status="active"))
+
 
 class FormStatus(forms.Form):
     change_status = forms.ChoiceField(choices=Hit.CHOICES)
@@ -17,8 +20,9 @@ class FormStatus(forms.Form):
 
 
 class FormAssigned(forms.Form):
-    assigned = forms.ModelChoiceField(label="Change assigned to",
-                                      queryset=User.objects.all())
+    assigned = forms.ModelChoiceField(
+        label="Change assigned to",
+        queryset=User.objects.filter(profile__status='active'))
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)

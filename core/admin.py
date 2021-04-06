@@ -4,7 +4,7 @@ from django_admin_relation_links import AdminChangeLinksMixin
 from .models import Hit, Profile
 
 class ProfileAdmin(AdminChangeLinksMixin, admin.ModelAdmin):
-    list_display = ("id", "user_link", "type")
+    list_display = ("id", "user_link", "type", "status")
     change_links = ("user",)
     filter_horizontal = ("manages",)
 

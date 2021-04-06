@@ -24,6 +24,9 @@
                 {% for boss_profile in bosses  %}
                 <div class="box">
                         <span class="has-text-weight-semibold  is-family-primary "> Boss: {{boss_profile.user}}</span>
+                                                        <span class="tag
+                                                                is-{{boss_profile.status_color}}">
+                                                                {{boss_profile.get_status}}</span>
                         <ul>
                                 {% for user in boss_profile.manages.all  %}
                                 <li class="m-2">

@@ -31,7 +31,10 @@
                                 </div>
                                 <div class="content">
                                         {% if object.description %}
+                                                <h2 class="subtitle is-6">Description </h2>
+                                                <div class="block">
                                                 {{object.description}}
+                                                </div>
                                         {% endif %}
                                         <time>
                                         created at {{object.created_at}}
@@ -78,6 +81,9 @@
                         </ul>
 
                 {% endif %}
+                <div class="mt-6">
+                        <a href="{%url 'hitman_update' object.id %}" class="button is-info ">Edit</a>
+                </div>
         </div>
 </div>
 

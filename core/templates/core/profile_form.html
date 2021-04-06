@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="subtitle">
+        Edit {{object.user.username}}
+</h2>
+
+{% url 'update_view' object.id as url_  %}
+<form novalidate action="{{url_}}" method="POST" accept-charset="utf-8">
+        {% csrf_token %}
+{% include "form.html" %}
+<div class="field">
+        <div class="control">
+                <button class="button is-success" type="submit">Update</button>
+                <a href="{%url 'hitman_detail' object.id %}" class="button is-text">Back</a>
+        </div>
+</div>
+        
+</form>
+        
+{% endblock content %}

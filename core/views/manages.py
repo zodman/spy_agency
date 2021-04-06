@@ -10,13 +10,35 @@ from ..models import Profile
 from django_tables2 import SingleTableView
 from django_tables2.utils import A
 import django_tables2 as table
+from django import forms
 
 
-class HitmanUpdateView(generic.UpdateView):
+class MixinRestrictedHitman:
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        if user.profile.is_hitman:
+            raise Http404("not allowed")
+        elif user.profile.is_boss:
+            qs = qs.filter(manages=user)
+        return qs
+
+
+class HitmanUpdateView(MixinRestrictedHitman, generic.UpdateView):
     model = Profile
 
+    def get_form_class(self):
+        if self.request.user.profile.is_leader:
+            return forms.modelform_factory(Profile,
+                                           fields=('status', "description", "type",))
+        return forms.modelform_factory(Profile,
+                                       fields=('status', "description",))
 
-class HitmanDetail(generic.DetailView):
+    def form_valid(self, form):
+        messages.success(self.request, "Updated Hitman")
+        return super().form_valid(form)
+
+class HitmanDetail(MixinRestrictedHitman, generic.DetailView):
     model = Profile
     template_name = "core/profile_detail.html"
 
@@ -34,7 +56,7 @@ class ProfileTable(table.Table):
         model = Profile
         fields = ("user__username", 'type', "status")
 
-class HitmenView(SingleTableView):
+class HitmenView(MixinRestrictedHitman, SingleTableView):
     model = Profile
     table_class = ProfileTable
     template_name = "core/profile_list.html"
