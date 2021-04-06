@@ -43,9 +43,10 @@ jobs:
       with:
         python-version: 3.9
     - name: Install SSH Key
-      uses: webfactory/ssh-agent@v0.5.1
+      uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
       with:
-        ssh-private-key: ${{ secrets.SSH_KEY }}
+        SSHKEY: ${{ secrets.SSH_KEY }}
+        ORIGIN: python3.ninja
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
