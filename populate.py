@@ -32,7 +32,9 @@ admin = User.objects.create_superuser("admin", "admin@example.com", "admin")
 Profile.objects.create(type="leader", user=admin)
 
 
-for i in User.objects.all():
+for i in User.objects.exclude(username='admin'):
+    i.set_password("demo1")
+    i.save()
     try:
         i.profile
     except Profile.DoesNotExist:
