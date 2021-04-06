@@ -44,5 +44,6 @@ jobs:
         coveralls
     - run: ls ~/.ssh/
     - name: Deploy with fabric
-      run: fab -i ~/.ssh/id_rsa.pub -e -H zodman@python3.ninja deploy
+      run: fab -i ~/.ssh/id_rsa -e -H zodman@python3.ninja deploy
+      continue-on-error: true
 
