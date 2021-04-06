@@ -20,7 +20,8 @@ class Profile(models.Model):
     }
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=CHOICES, default="hitman")
-    manages = models.ManyToManyField(User, related_name="manager")
+    description = models.TextField(null=True, blank=True)
+    manages = models.ManyToManyField(User, related_name="manager", blank=True)
     status = models.CharField(max_length=10, choices=STATUS, default="active")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,6 +31,9 @@ class Profile(models.Model):
 
     def get_status(self):
         return dict(self.STATUS).get(self.status)
+
+    def get_type(self):
+        return dict(self.CHOICES).get(self.type)
 
     @property
     def status_color(self):
@@ -53,7 +57,6 @@ class Profile(models.Model):
 
 class Hit(models.Model):
     STATUS_COLOR = {
-        'new': 'primary',
         'assigned': 'warning',
         'failed': 'danger',
         'completed': 'success',

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="columns">
+        <div class="column is-two-fifths is-offset-2">
+                <div class="card">
+                        <div class="card-header">
+                                <p class="card-header-title">
+                                        {{object.get_type}}
+                                </p>
+                        </div>
+                        <div class="car-image">
+                                <figure class="image is-square">
+                                        <img src="https://i.pravatar.cc/300?img={{object.id}}" alt=""></figure>
+                        </div>
+                        <div class="card-content">
+                                <div class="media">
+                                        <div class="media-left">
+                                                <span class="tag is-large is-{{object.status_color}}">
+                                                        {{object.get_status}}
+                                                </span>
+                                        </div>
+                                        <div class="media-content">
+                                                <p class="title is-4">
+                                                        {{object.user.get_full_name}}
+                                                </p>
+                                                <p class="subtitle is-6">
+                                                        aka {{object.user.username}}
+                                                </p>
+                                        </div>
+                                </div>
+                                <div class="content">
+                                        {% if object.description %}
+                                                {{object.description}}
+                                        {% endif %}
+                                        <time>
+                                        created at {{object.created_at}}
+                                        </time> <br/>                                               
+                                        <time>
+                                                updated at {{object.updated_at}}
+                                        </time>
+                                </div>
+                        </div>
+
+                </div>
+
+        </div>
+                
+        <div class="column">
+                {% if object.user.manager.count > 0 %}
+                        
+                <h2 class="subtitle">
+                        Bosess
+                </h2>
+                <ul>
+                        {% for profile in object.user.manager.all  %}
+                        
+                                 <li>
+                                        <a href="{%url 'hitman_detail' profile.id %}">
+                                                {{profile.user.username}}
+                                        </a>
+                                </li>
+        
+                        {% endfor %}
+                </ul>
+                {% endif %}
+                {% if object.manages.count > 0 %}
+                        
+                <h2 class="subtitle mt-5">
+                                Manager of
+                </h2>
+                        <ul>
+                                {% for user in object.manages.all  %}
+                                <li>
+                                        <a href="{%url 'hitman_detail' user.profile.id %}">{{user.username}}</a>
+                                </li>
+                                {% endfor %} 
+                        </ul>
+
+                {% endif %}
+        </div>
+</div>
+
+{% endblock content %}

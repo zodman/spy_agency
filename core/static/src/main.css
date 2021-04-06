@@ -1,7 +1,9 @@
 @import url("node_modules/bulma/css/bulma.css");
 
-.turbo-progress-bar {
+.turbolinks-progress-bar, .turbo-progress-bar {
       height: 5px;
         background-color: green;
 }
+
+
 

@@ -8,7 +8,7 @@ CI](https://github.com/zodman/spy_agency/actions/workflows/django.yml/badge.svg)
 Status](https://coveralls.io/repos/github/zodman/spy_agency/badge.svg?branch=master)](https://coveralls.io/github/zodman/spy_agency?branch=master)
 
 
-[https://spy-agency.python3.ninja]
+Demo online: https://spy-agency.python3.ninja
 
 
 ## Install
@@ -17,13 +17,15 @@ Status](https://coveralls.io/repos/github/zodman/spy_agency/badge.svg?branch=mas
 cd spy_agency
 python3 -m venv .env
 source .env/bin/activate
-pip install -r requirements.in
+pip install -r requirements.txt
 fab init-db
 yarn install # or npm install
 yarn run build # or npm run build
 python manage.py runserver
 ```
 go to http://localhost:8000/
+
+[init-db](https://github.com/zodman/spy_agency/blob/master/populate.py)
 
 ## Run test:
 
@@ -35,7 +37,9 @@ fab test
 ## deploy:
 ```
 fab deploy -H zodman@python3.ninja
+
 ```
+[tasks for deploy](https://github.com/zodman/spy_agency/blob/master/fabfile.py)
 
 ## Administration (internal)
 

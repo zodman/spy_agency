@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "active_link",
     "core",
     "django_webserver",
+    "spurl",
 ]
 
 MIDDLEWARE = [

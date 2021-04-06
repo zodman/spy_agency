@@ -11,6 +11,7 @@ import django_tables2 as table
 import django_filters
 import django_filters.views
 from ..forms import FormStatus, FormAssigned
+from django.urls import reverse_lazy
 
 
 class HitFilter(django_filters.FilterSet):
@@ -22,6 +23,7 @@ class HitFilter(django_filters.FilterSet):
 
 
 class HitTable(table.Table):
+    id = table.Column(attrs={'td': {'x-ref': lambda value, record: record.id}})
     actions = table.TemplateColumn(template_name="_column_actions.html")
     status = table.Column()
 
@@ -33,11 +35,12 @@ class HitTable(table.Table):
     class Meta:
         model = Hit
         exclude = ("description", "created_at", "updated_at")
+        sequence = ("id", "assigned", "target", "status", "created_by",
+                    "actions")
 
 
 class MixinRestricted:
     def get_queryset(self):
-
         qs = super().get_queryset()
         user = self.request.user
         if user.profile.is_hitman:
@@ -53,6 +56,40 @@ class Dashboard(MixinRestricted, table.SingleTableMixin,
     model = Hit
     table_class = HitTable
     filterset_class = HitFilter
+
+
+class BulkView(MixinRestricted, generic.ListView, generic.FormView):
+    model = Hit
+    form_class = FormAssigned
+    template_name = "core/bulk_assigned.html"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs = qs.filter(status='assigned')
+        return HitFilter(self.request.GET, qs).qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        qs = self.get_queryset()
+        context.update({
+            'object_list': qs,
+            'users': ", ".join(list(qs.values_list("assigned__username",
+                                                 flat=True).distinct()))
+        })
+        return context
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        user = self.request.user
+        return form_class(user, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        user = form.cleaned_data.get("assigned")
+        qs = self.get_queryset()
+        qs.update(assigned=user)
+        messages.success(self.request, "Bulk updated success")
+        return HttpResponseRedirect(reverse_lazy("dashboard"))
 
 
 class HitView(MixinRestricted, generic.DetailView):
@@ -140,6 +177,7 @@ def index(request):
 hit_view = login_required(HitView.as_view())
 dashboard = login_required(Dashboard.as_view())
 create_hit = login_required(CreateHit.as_view())
+bulk = login_required(BulkView.as_view())
 
 __all__ = (
     'hit_view',
@@ -147,4 +185,5 @@ __all__ = (
     'dashboard',
     'create_hit',
     'index',
+    'bulk',
 )

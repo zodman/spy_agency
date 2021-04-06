@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% block content %}
+
+<div class="m-2">
+        <a class="button is-info" href="{%url 'manage' %}">Manage Hitmen teams</a>
+</div>
+
+{% render_table table %}
+        
+{% endblock content %}

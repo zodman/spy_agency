@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load spurl %}
+
+{% block content %}
+
+<h2 class="subtitle">
+        There are {{object_list.count}} hits to update to this users {{users}},
+        all status different from 'assigned' was ignored..
+</h2>
+
+{% if object_list.count > 0 %}
+        
+{% url 'bulk' as url_  %}
+<form novalidate action="{% spurl path=url_ add_query=request.GET.urlencode %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {% include "form.html" %}
+        <div class="field">
+                <div class="control">
+                        <button class="button is-primary">Yes, change all! </button>
+                </div>
+        </div>
+</form>
+
+{% endif %}
+
+{% endblock content %}

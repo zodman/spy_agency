@@ -29,8 +29,8 @@
               <a href="{% url 'dashboard' %}" > Hits </a>
             </li>
             {% if request.user.profile.is_boss or request.user.profile.is_leader %}
-            <li  class="{% active_link 'manage' 'is-active' %}">
-              <a href="{%url 'manage' %}">Manage Hitmen</a>
+            <li>
+              <a href="{% url 'hitmen' %}" >Hitmen</a>
             </li>
             {% endif %}
             <li>

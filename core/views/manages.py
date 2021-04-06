@@ -1,10 +1,43 @@
 from django.views import generic
 from django.urls import reverse_lazy
 from django.http import Http404
-from ..forms import FormManager
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.utils.html import format_html
+from ..forms import FormManager
+from ..models import Profile
+from django_tables2 import SingleTableView
+from django_tables2.utils import A
+import django_tables2 as table
+
+
+class HitmanUpdateView(generic.UpdateView):
+    model = Profile
+
+
+class HitmanDetail(generic.DetailView):
+    model = Profile
+    template_name = "core/profile_detail.html"
+
+class ProfileTable(table.Table):
+    actions = table.LinkColumn("hitman_detail", kwargs={'pk': A('pk')},
+                               text="Detail")
+    status = table.Column()
+
+    def render_status(self, value, record):
+        return format_html(
+            f"<span class='tag is-{record.status_color} is-light'>{value}</span>"
+        )
+
+    class Meta:
+        model = Profile
+        fields = ("user__username", 'type', "status")
+
+class HitmenView(SingleTableView):
+    model = Profile
+    table_class = ProfileTable
+    template_name = "core/profile_list.html"
 
 
 class ManageHitman(generic.FormView):
@@ -56,3 +89,14 @@ class ManageHitman(generic.FormView):
 
 
 manages = login_required(ManageHitman.as_view())
+hitmen = login_required(HitmenView.as_view())
+hitman_detail = login_required(HitmanDetail.as_view())
+hitman_update = login_required(HitmanUpdateView.as_view())
+
+
+__all__ = [
+    'hitmen',
+    'manages',
+    'hitman_detail',
+    'hitman_update',
+]
