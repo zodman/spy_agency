@@ -42,6 +42,7 @@ jobs:
         fab init-db
         fab test
         coveralls
+    - run: ls ~/.ssh/
     - name: Deploy with fabric
-      run: fab -e -H zodman@python3.ninja deploy
+      run: fab -i ~/.ssh/id_rsa.pub -e -H zodman@python3.ninja deploy
 
