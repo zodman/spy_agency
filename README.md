@@ -13,30 +13,40 @@ Status](https://coveralls.io/repos/github/zodman/spy_agency/badge.svg?branch=mas
 
 ## Install
 
-```python
+```bash
 cd spy_agency
-python3 -m venv .env/bin/activate
+python3 -m venv .env
+source .env/bin/activate
 pip install -r requirements.in
 fab init-db
-yarn install
-yarn run build
+yarn install # or npm install
+yarn run build # or npm run build
 python manage.py runserver
 ```
-
 go to http://localhost:8000/
 
+## Run test:
 
-## admisnitration (internal)
+```bash
+source .env/bin/activate
+fab test
+```
 
-http://localhost:8000/admin
-admin/admin
+## deploy:
+```
+fab deploy -H zodman@python3.ninja
+```
 
-the application contains a loginas module you can go to:
+## Administration (internal)
 
-With the admin go to: Core >> Profiles
+    http://localhost:8000/admin
+    admin/admin
 
-Here show the list of users
+The application contains a loginas.
 
-click on user >> then click on "Login as User"
+With the admin go to: `Core >> Profiles`  
+There will show the list of users  
 
-Thats the way more easy to switch username
+    click on user >> then click on "Login as User"
+
+That's the way more easy to switch username auth (without login with password)
