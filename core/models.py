@@ -14,6 +14,10 @@ class Profile(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
     )
+    COLOR_STATUS = {
+        'active': 'light',
+        'inactive': 'dark'
+    }
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=10, choices=CHOICES, default="hitman")
     manages = models.ManyToManyField(User, related_name="manager")
@@ -23,6 +27,14 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.type}"
+
+    def get_status(self):
+        return dict(self.STATUS).get(self.status)
+
+    @property
+    def status_color(self):
+        return dict(self.COLOR_STATUS).get(self.status, "danger")
+
     @property
     def is_leader(self):
         if self.type == 'leader':
@@ -47,25 +59,27 @@ class Hit(models.Model):
         'completed': 'success',
     }
     CHOICES = (
-        ('new', 'New'),
         ('assigned', 'Assigned'),
         ('failed', 'Failed'),
         ('completed', 'Completed'),
     )
     STATES = {
-        'new': ['assigned',],
         'assigned': ['failed','completed']
     }
     assigned = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hits")
     description = models.TextField()
     target = models.CharField(max_length=50)
-    status = models.CharField(max_length=10, choices = CHOICES, default='new')
+    status = models.CharField(max_length=10, choices = CHOICES, default='assigned')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hits_created")
     created_at = models.DateTimeField(null=True, auto_now_add=True)
     updated_at = models.DateTimeField(null=True, auto_now=True)
 
     class Meta:
         ordering = ("-status",)
+
+    @property
+    def is_assigned(self):
+        return self.status == 'assigned'
 
     @classmethod
     def next_status(cls, state):
@@ -76,11 +90,7 @@ class Hit(models.Model):
         return choices
 
     def get_status(self):
-        return dict(self.CHOICES).get(self.status)
-
-    @property
-    def is_new(self):
-        return self.status == 'new'
+        return dict(self.CHOICES).get(self.status, 'Assigned')
 
     @property
     def status_color(self):

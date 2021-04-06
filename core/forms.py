@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from .models import Hit
 
 
-class FormUsers(forms.Form):
-    users = forms.ModelChoiceField(queryset=User.objects.all())
-
+class FormManager(forms.Form):
+    manager = forms.ModelChoiceField(queryset=User.objects.filter(profile__type="boss"))
+    user = forms.ModelChoiceField(queryset=User.objects.all())
 
 class FormStatus(forms.Form):
     change_status = forms.ChoiceField(choices=Hit.CHOICES)

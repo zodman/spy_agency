@@ -7,28 +7,37 @@
     <script src="{{STATIC_URL}}dist/main.js"></script>
   </head>
   <body>
-      {% block body %}
-  <section class="section">
-    <div class="container">
+    {% block body %}
+    <section class="section">
+      <div class="container">
 
-  {% include "messages.html" %}
+        {% include "messages.html" %}
         {% if request.user.is_authenticated %}
-            <div class="tabs is-centered">
-                <ul>
-                    <li  class="{% active_link 'dashboard' 'is-active' %}">
-                        <a href="{% url 'dashboard' %}" > Hits </a>
-                    </li>
-                    <li>
-                      <a href="{% url 'auth_logout' %}">Logout </a>
-                    </li>
-                    <li> {{request.user.username}} [ {{request.user.profile.type}} ] </li>
-                </ul>
-            </div>
+        <div class="tabs is-centered">
+          <ul>
+            <li  class="{% active_link 'dashboard' 'is-active' %}">
+              <a href="{% url 'dashboard' %}" > Hits </a>
+            </li>
+            {% if request.user.profile.is_boss or request.user.profile.is_leader %}
+            <li  class="{% active_link 'manage' 'is-active' %}">
+              <a href="{%url 'manage' %}">Manage Hitmen</a>
+            </li>
+              
+            {% endif %}
+            <li>
+              <a href="{% url 'auth_logout' %}">Logout </a>
+            </li>
+            <li> {{request.user.username}} [ {{request.user.profile.type}} ] </li>
+            {% if request.user.is_superuser %}
+            <li> <a href="{% url 'admin:index' %}"> Admin </a></li> 
+            {% endif %}
+          </ul>
+        </div>
         {% endif %}
         {% block content %}
         {% endblock content %}
-    </div>
-  </section>
-      {% endblock body %}
+      </div>
+    </section>
+    {% endblock body %}
   </body>
 </html>

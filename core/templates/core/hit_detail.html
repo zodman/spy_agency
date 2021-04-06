@@ -29,7 +29,7 @@
                                         </h2>
 
                                 </div>
-                                {% if form_status %}
+                                {% if request.user.is_hitman and form_status %}
                                 <div class="column">
                                         <div>
                                                 <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-8">
@@ -52,13 +52,15 @@
                                                 Assigned: {{object.assigned}}
                                         </h2>
                                 </div>
-                                <div class="column">
-                                        <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-7">
-                                                {% csrf_token %}
-                                                {% include "form.html" with form=form_assigned %}
-                                                <button class="button is-info" type="submit">update</button>
-                                        </form>
-                                </div>
+                                {% if form_assigned %}
+                                        <div class="column">
+                                                <form novalidate action="{% url 'update_hit' object.pk  %}" method="post" accept-charset="utf-7">
+                                                        {% csrf_token %}
+                                                        {% include "form.html" with form=form_assigned %}
+                                                        <button class="button is-info" type="submit">update</button>
+                                                </form>
+                                        </div>
+                                {% endif %}
                         </div>
                         <h2 class="subtitle">
                                 created by : {{object.created_by }}

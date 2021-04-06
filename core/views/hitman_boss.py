@@ -10,7 +10,7 @@ from django.db.models import Q
 import django_tables2 as table
 import django_filters
 import django_filters.views
-from .forms import FormStatus, FormAssigned
+from ..forms import FormStatus, FormAssigned
 
 
 class HitFilter(django_filters.FilterSet):
@@ -64,7 +64,7 @@ class HitView(MixinRestricted, generic.DetailView):
         user = self.request.user
         if Hit.next_status(object.status) and user.profile.is_hitman:
             context["form_status"] = FormStatus(object.status)
-        if user.profile.is_boss and object.is_new:
+        if (user.profile.is_boss or user.profile.is_leader) and object.is_assigned:
             context["form_assigned"] = FormAssigned(user)
         context["avatar_id"] = range(10)
         return context
@@ -143,6 +143,8 @@ create_hit = login_required(CreateHit.as_view())
 
 __all__ = (
     'hit_view',
+    'update_hit',
     'dashboard',
     'create_hit',
+    'index',
 )

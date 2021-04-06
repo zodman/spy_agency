@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="columns">
+        <div class="column">
+                <form novalidate action="{% url 'manage' %}" method="post" accept-charset="utf-8">
+                        {% csrf_token %}
+                        {% include "form.html" %}
+                        <div class="field">
+                                <div class="control"  x-data="{buttonDisabled: false}">
+                                        <button type="submit" class="button is-info" x-on:click="buttonDisabled=true" x-bind:disabled="buttonDisabled">
+                                                Add
+                                        </button>
+                                </div>
+                        </div>
+                </form>
+        </div>
+        <div class="column">
+                <h2 class="subtitle">
+                        Hitman at my charge
+                </h2>
+                {% for boss_profile in bosses  %}
+                       <div>
+                               {{boss_profile.user}}
+                       </div>
+                <ul>
+                        {% for user in boss_profile.manages.all  %}
+                        <li class="m-2">
+                                <div class="columns">
+                                        <div class="column">
+                                                {{user.username}}
+                                        </div>
+                                        <div class="column hast-text-centered">
+                                                {% if user.profile %}
+                                                <span class="tag is-{{user.profile.status_color}}"> {{ user.profile.get_status }} </span>
+                                                {% else %}
+                                                No profile
+                                                {% endif %}
+                                        </div>
+                                        <div class="column">
+                                                <form action="{%url 'manage'%}" method="post" accept-charset="utf-8">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="user" value="{{user.id}}">
+                                                        <input type="hidden" name="manager" value="{{boss_profile.user.id}}">
+                                                        <button class="mr-2 delete "  type="submit">Remove</button>
+                                                </form>
+
+                                        </div>
+                                </div>
+                        </li>
+                        {% endfor %}
+                </ul>
+                {% endfor %}
+        </div>
+</div>
+
+{% endblock content %}
