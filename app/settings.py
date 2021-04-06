@@ -34,8 +34,7 @@ INSTALLED_APPS = [
     "django_filters",
     "active_link",
     "core",
-
-
+    "django_webserver",
 ]
 
 MIDDLEWARE = [
