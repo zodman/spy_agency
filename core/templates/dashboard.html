@@ -7,8 +7,10 @@
                 {% if filter %}
                         <div class="m-5" >
                                 <button class="button is-warning" x-show="!open" @click="open=true">Show Filters </button>
-                                {% url 'bulk' as url_  %}
-                                <a href="{% spurl path=url_ add_query=request.GET.urlencode remove_query_param="page" %}" class="button">Bulk Assign </a>
+                                {% if request.user.profile.is_leader or request.user.profile.is_boss %}
+                                        {% url 'bulk' as url_  %}
+                                        <a href="{% spurl path=url_ add_query=request.GET.urlencode remove_query_param="page" %}" class="button">Bulk Assign </a>
+                                {% endif %}
                                 <div class="box" x-show="open">
                                         <button class="delete is-pulled-right"  @click="open=false">Hide Filters </button>
                                         <form action="" method="get">

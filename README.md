@@ -54,3 +54,4 @@ There will show the list of users
     click on user >> then click on "Login as User"
 
 That's the way more easy to switch username auth (without login with password)
+
