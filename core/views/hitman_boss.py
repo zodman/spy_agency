@@ -130,7 +130,7 @@ def update_hit(request, pk):
             else:
                 show_error(f, request)
         # TODO move this valid to the form
-        if request.user.profile.is_boss and object.is_assigned:
+        if (request.user.profile.is_boss or request.user.profile.is_leader) and object.is_assigned:
             f = FormAssigned(request.user, request.POST)
             if f.is_valid():
                 object.assigned = f.cleaned_data.get("assigned")
