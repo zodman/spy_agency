@@ -10,11 +10,11 @@ class TestMixin:
         self.make_user("u1")
         self.make_user("u2")
         self.make_user("u3")
-        user = User.objects.all().first()
-        Profile.objects.create(type="hitman", user=user)
+        hitman_user = User.objects.all().first()
+        Profile.objects.create(type="hitman", user=hitman_user)
         user = User.objects.all()[1]
         boss = Profile.objects.create(type="boss", user=user)
-        boss.manages.add(user)
+        boss.manages.add(hitman_user)
         user = User.objects.all().last()
         Profile.objects.create(type="leader", user=user)
         s = Seed.seeder()
@@ -81,7 +81,8 @@ class TestFlow(TestMixin, TestCase):
             with self.login(username="u2"):
                 self.get("dashboard")
                 table = self.get_context("table")
-                hits = Hit.objects.filter(Q(assigned__username="u2")|Q(created_by__username="u2"))
+                hits = Hit.objects.filter(
+                    Q(assigned__username="u2") | Q(created_by__username="u2"))
                 self.assertTrue(hits.count() == table.data.data.count())
 
     def test_bigboss_flow(self):
@@ -93,14 +94,14 @@ class TestFlow(TestMixin, TestCase):
                 self.assertTrue(hits.count() == table.data.data.count())
             with self.subTest("The bigboss cann't change hit closed"):
                 hit = Hit.objects.all().last()
-                hit.status ="failed"
+                hit.status = "failed"
                 hit.save()
                 self.get("hit_view", pk=hit.id)
                 self.response_200()
                 self.assertFalse("form_assigned" in self.last_response.context)
             with self.subTest("The bigboss can change assigment"):
                 hit = Hit.objects.all().last()
-                hit.status ="assigned"
+                hit.status = "assigned"
                 hit.save()
                 self.get("hit_view", pk=hit.id)
                 self.response_200()
@@ -121,7 +122,7 @@ class TestFlow(TestMixin, TestCase):
                 self.post("manage", data=data)
                 self.response_302()
                 boss = Profile.objects.get(user__username="u2")
-                self.assertTrue( boss.manages.filter(id=user.id).exists())
+                self.assertTrue(boss.manages.filter(id=user.id).exists())
                 with self.subTest("remove the hitman"):
                     data = {
                         'manager': User.objects.get(username="u2").id,
@@ -130,11 +131,80 @@ class TestFlow(TestMixin, TestCase):
                     self.post("manage", data=data)
                     self.response_302()
                     boss = Profile.objects.get(user__username="u2")
-                    self.assertFalse( boss.manages.filter(id=user.id).exists())
+                    self.assertFalse(boss.manages.filter(id=user.id).exists())
 
+    def test_flow_manage_users(self):
+        with self.login(username="u1"):
+            self.get("hitmen")
+            self.response_404()
+        with self.subTest("boss can view here people"):
+            with self.login(username="u2"):
+                self.get("hitmen")
+                self.response_200()
+                self.assertInContext("table")
+                table = self.get_context("table")
+                self.assertEqual(1, table.data.data.count())
+        with self.subTest("leader can view all"):
+            with self.login(username="u3"):
+                self.get("hitmen")
+                self.response_200()
+                table = self.get_context("table")
+                self.assertTrue(table.data.data.count() > 1)
+        with self.subTest("leader can change status of hitman"):
+            with self.login(username="u3"):
+                profile = Profile.objects.get(type="hitman")
+                data = {
+                    'status': 'inactive',
+                    'description': 'Deactivated!',
+                    'type': profile.type
+                }
+                self.post("hitman_update", pk=profile.id, data=data)
+                self.response_302()
+                profile = Profile.objects.get(type="hitman")
+                self.assertEqual(profile.status, 'inactive')
+
+    def test_boss_hitman_flow(self):
+        with self.subTest("boss can change status of hitman"):
+            with self.login(username="u2"):
+                self.assertEqual(User.objects.get(username="u2").profile.type,
+                                 "boss")
+                profile = Profile.objects.get(type="hitman")
+                data = {
+                    'status': 'inactive',
+                    'description': 'Deactivated!',
+                }
+                self.post("hitman_update", pk=profile.id, data=data)
+                self.response_302()
+                profile = Profile.objects.get(type="hitman")
+                self.assertEqual(profile.status, 'inactive')
+
+    def test_bulk_flow(self):
+        with self.login(username="u3"):
+            self.get_check_200("bulk")
+            user = Profile.objects.get(type="hitman").user
+            self.post("bulk", data={'assigned': user.id})
+            self.response_302()
 
 
 class TestHitman(TestMixin, TestCase):
+    def test_views(self):
+        self.get_check_200("index")
+        with self.login(username="u2"):
+            self.get("index")
+            self.response_302()
+            self.get("/hits")
+            self.response_301()
+            self.get("/hitmen")
+            self.response_301()
+            self.get("/hits/bulk")
+            self.response_302()
+
+
+        self.get("/register")
+        self.response_301()
+        self.get("/logout")
+        self.response_301()
+
     def test_hit_detail(self):
         h = Hit.objects.filter(assigned__username="u1").first()
 
@@ -146,8 +216,8 @@ class TestHitman(TestMixin, TestCase):
             self.response_404()
 
     def test_create_hit(self):
-        user = User.objects.get(username='u2')
-        with self.login(username=user.username):
+        user = User.objects.get(username='u1')
+        with self.login(username='u2'):
             self.get("create_hit")
             form = self.get_context("form")
             self.assertTrue(form.fields["assigned"].queryset.count() == 1)

@@ -11,7 +11,12 @@ urlpatterns = [
     path("admin/", include("loginas.urls")),
     path("register/",
          generic.RedirectView.as_view(pattern_name="registration_register")),
+    path("logout/",
+         generic.RedirectView.as_view(pattern_name="auth_logout")),
+
     path("hits/", generic.RedirectView.as_view(pattern_name="dashboard")),
+    path("hits/bulk", generic.RedirectView.as_view(pattern_name="bulk")),
+    path("hitmen/", generic.RedirectView.as_view(pattern_name="hitmen")),
     path("accounts/", include("registration.backends.simple.urls")),
     path("app/", include("core.urls")),
     path("messages/",

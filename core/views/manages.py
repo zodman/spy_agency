@@ -20,7 +20,7 @@ class MixinRestrictedHitman:
         if user.profile.is_hitman:
             raise Http404("not allowed")
         elif user.profile.is_boss:
-            qs = qs.filter(manages=user)
+            qs = qs.filter(user__in=user.profile.manages.all())
         return qs
 
 
