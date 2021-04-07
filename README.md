@@ -55,3 +55,14 @@ There will show the list of users
 
 That's the way more easy to switch username auth (without login with password)
 
+
+* timeconsuming: 
+
+    6 april: 7hrs
+    5 april: 5hrs
+    4 april: 2hrs
+    3 april: 5hrs
+    2 april: 2hrs
+    1 april: 3hrs
+
+    total: 24hrs
